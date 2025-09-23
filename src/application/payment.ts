@@ -17,12 +17,11 @@ interface Product {
 async function fulfillCheckout(sessionId: string) {
   console.log("Fulfilling Checkout Session " + sessionId);
 
-  // Retrieve the Checkout Session from the API with line_items expanded
   const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ["line_items"],
   });
   console.log(
-    util.inspect(checkoutSession, false, null, true /* enable colors */)
+    util.inspect(checkoutSession, false, null, true )
   );
 
   const order = await Order.findById(
