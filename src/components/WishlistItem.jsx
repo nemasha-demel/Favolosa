@@ -1,38 +1,73 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { X, ShoppingBag } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/lib/features/cartSlice";
+import { clearWishlist } from "@/lib/features/wishlistSlice";
+
 function WishlistItem({ item }) {
-  const subTotal = item.product.price * item.quantity;
+  const dispatch = useDispatch();
+  const product = item.product;
 
   return (
-    <tr className="border-b">
-      {/* Remove button (can add delete logic later) */}
-      <td className="py-2 px-2">
-        <button className="text-gray-500 hover:text-red-600">×</button>
-      </td>
+    <div
+      key={product._id}
+      className="bg-white rounded-xl shadow hover:shadow-md transition duration-300 flex flex-col overflow-hidden"
+    >
+      {/* Header with Remove button */}
+      <div className="flex justify-between items-center px-3 py-2 border-b">
+        <button
+            onClick={() => dispatch(clearWishlist(product._id))}
+            className="flex items-center gap-1 text-xs text-gray-600 px-2 py-1 rounded hover:text-red-500 hover:bg-gray-200"
+        >
+            <X className="w-3.5 h-3.5" />
+            Remove
+        </button>
+       </div>
 
-      {/* Product Image + Name */}
-      <td className="py-2 px-2 flex items-center space-x-3">
-        <img
-          src={item.product.image || "/placeholder.svg"}
-          alt={item.product.name}
-          className="w-14 h-14 object-cover rounded"
-        />
-        <span>{item.product.name}</span>
-      </td>
+      {/* Image with Add to Cart button */}
+      <div className="relative">
+        <button
+          onClick={() =>
+            dispatch(
+              addToCart({
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: 1,
+              })
+            )
+          }
+          className="absolute top-2 right-2 p-2 rounded-full bg-white/90 hover:bg-gray-200 shadow"
+        >
+          <ShoppingBag className="w-5 h-5 text-gray-700" />
+        </button>
 
-      {/* Price */}
-      <td className="py-2 px-2">LKR {item.product.price}</td>
+        <Link to={`/product/${product._id}`}>
+          <img
+            src={product.image || "/placeholder.svg"}
+            alt={product.name}
+            className="w-full h-48 object-cover"
+          />
+        </Link>
+      </div>
 
-      {/* Quantity (just display for now) */}
-      <td className="py-2 px-2">
-        <div className="flex items-center space-x-2">
-          <button className="border px-2">-</button>
-          <span>{item.quantity}</span>
-          <button className="border px-2">+</button>
+      {/* Product Info */}
+      <div className="px-3 py-3">
+        <Link to={`/product/${product._id}`}>
+          <span className="text-sm font-medium block">{product.name}</span>
+        </Link>
+        <span className="text-sm text-gray-600 block">
+          LKR {product.price}
+        </span>
+
+        {/* Ratings (static for now, 4 stars) */}
+        <div className="flex text-yellow-400 mt-1 text-sm">
+          <span>★★★★☆</span>
         </div>
-      </td>
-
-      {/* Sub Total */}
-      <td className="py-2 px-2">LKR {subTotal}</td>
-    </tr>
+      </div>
+    </div>
   );
 }
 
