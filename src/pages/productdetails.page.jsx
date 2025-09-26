@@ -4,20 +4,19 @@ import { useDispatch } from "react-redux";
 import { Star } from "lucide-react";
 import { addToCart } from "@/lib/features/cartSlice";
 import { addToWishlist } from "@/lib/features/wishlistSlice";
-import { useGetProductByIdQuery } from "@/lib/api"; // Import the new hook
+import { useGetProductByIdQuery } from "@/lib/api";
 
 function ProductDetailsPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  
-  // Use RTK Query to fetch the specific product
-  const { 
-    data: product, 
-    isLoading, 
-    isError, 
-    error 
+
+  const {
+    data: product,
+    isLoading,
+    isError,
+    error,
   } = useGetProductByIdQuery(id);
-  
+
   // Loading state
   if (isLoading) {
     return (
@@ -41,28 +40,31 @@ function ProductDetailsPage() {
       </div>
     );
   }
-  
+
   // Error or not found
   if (isError || !product) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Product Not Found</h1>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Product Not Found
+          </h1>
           <p className="text-gray-600 mb-4">
-            {isError ? 
-              `Error loading product: ${error?.data?.message || error?.message || 'Unknown error'}` :
-              `Could not find product with ID: ${id}`
-            }
+            {isError
+              ? `Error loading product: ${
+                  error?.data?.message || error?.message || "Unknown error"
+                }`
+              : `Could not find product with ID: ${id}`}
           </p>
           <div className="space-x-4">
-            <button 
+            <button
               onClick={() => window.history.back()}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Go Back
             </button>
-            <button 
-              onClick={() => window.location.href = '/shop'}
+            <button
+              onClick={() => (window.location.href = "/shop")}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Browse Products
@@ -72,7 +74,14 @@ function ProductDetailsPage() {
       </div>
     );
   }
-  
+
+  // ✅ Calculate average rating
+  const averageRating =
+    product.reviews && product.reviews.length > 0
+      ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
+        product.reviews.length
+      : 0;
+
   // Success - render product
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -84,39 +93,47 @@ function ProductDetailsPage() {
             alt={product.name}
             className="w-full h-full object-contain rounded-2xl shadow"
             onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+              e.currentTarget.src =
+                "https://via.placeholder.com/400x300?text=Image+Not+Found";
             }}
           />
         </div>
-        
+
         {/* Right - Product Info */}
         <div>
           <h2 className="text-2xl font-semibold">{product.name}</h2>
-          
+
           {/* Rating */}
           <div className="flex items-center mt-2">
             {Array(5).fill(0).map((_, i) => (
               <Star
                 key={i}
-                className={`w-5 h-5 ${i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                className="w-5 h-5"
+                color={i < Math.round(averageRating) ? "#FACC15" : "#D1D5DB"}
+                fill={i < Math.round(averageRating) ? "#FACC15" : "none"}
               />
             ))}
+            <span className="ml-2 text-sm text-gray-600">
+              ({product.reviews?.length || 0} reviews)
+            </span>
           </div>
-          
+
           <p className="text-xl font-bold mt-3">LKR {product.price}</p>
           <p className="text-gray-600 mt-4">
             {product.description || "No description available."}
           </p>
-          
+
           {/* Category if available */}
           {product.category && (
             <div className="mt-4">
               <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                {typeof product.category === 'object' ? product.category.name : product.category}
+                {typeof product.category === "object"
+                  ? product.category.name
+                  : product.category}
               </span>
             </div>
           )}
-          
+
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6">
             <button
@@ -133,6 +150,37 @@ function ProductDetailsPage() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-12">
+        <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
+        {product.reviews && product.reviews.length > 0 ? (
+          <div className="space-y-4">
+            {product.reviews.map((r, i) => (
+              <div
+                key={r._id || i}
+                className="border p-4 rounded-lg shadow-sm bg-gray-50"
+              >
+                <div className="flex items-center mb-2">
+                  {Array(5).fill(0).map((_, j) => (
+                    <Star
+                      key={j}
+                      className="w-4 h-4"
+                      color={j < r.rating ? "#FACC15" : "#D1D5DB"}
+                      fill={j < r.rating ? "#FACC15" : "none"}
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-800">{r.review}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600">
+            No reviews yet. Be the first to review!
+          </p>
+        )}
       </div>
     </div>
   );
