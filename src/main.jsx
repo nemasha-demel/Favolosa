@@ -21,6 +21,9 @@ import PaymentPage from "./pages/payment.page";
 import CompletePage from "./pages/complete.page";
 import ProductDetailsPage from "./pages/productdetails.page.jsx";
 import PaymentOptionsPage from "./pages/payment-option.page.jsx";
+import TrendingPage from "./pages/trending.page.jsx";
+import BestSellersPage from "./pages/bestsellers.page.jsx";
+import NewArrivalsPage from "./pages/newarrivals.page.jsx"; 
 
 import { ClerkProvider } from "@clerk/clerk-react";
 
@@ -43,6 +46,9 @@ createRoot(document.getElementById("root")).render(
                 <Route path=":category" element={<ShopPage />} />
               </Route>
               <Route path="/product/:id" element={<ProductDetailsPage />} />
+              <Route path="/trending" element={<TrendingPage />} />
+              <Route path="/bestsellers" element={<BestSellersPage />} />
+              <Route path="/newarrivals" element={<NewArrivalsPage />} />
 
 
               {/* Cart routes - including nested payment and complete */}

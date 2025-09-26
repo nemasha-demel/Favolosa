@@ -32,7 +32,6 @@ export const Api = createApi({
     getProductsByCategory: build.query({           
       query: (categoryId) => `/products?categoryId=${categoryId}`,         
     }),
-    // 👇 ADD THIS NEW ENDPOINT
     getProductById: build.query({
       query: (id) => `/products/${id}`,
     }),
@@ -45,7 +44,22 @@ export const Api = createApi({
         method: "POST",            
         body: product,          
       }),        
-    }),        
+    }), 
+    getFilteredProducts: build.query({
+      query: (filters) => {
+        const params = new URLSearchParams();
+
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== "") {
+            params.append(key, value);
+          }
+        });
+
+        return `/products?${params.toString()}`;
+      },
+    }),
+
+       
     createOrder: build.mutation({          
       query: (order) => ({            
         url: "/orders",            
@@ -69,5 +83,6 @@ export const {
   useGetAllCategoriesQuery,
   useGetProductByIdQuery, // 👈 ADD THIS NEW HOOK
   useCreateOrderMutation, 
-  useCreateProductMutation
+  useCreateProductMutation,
+  useGetFilteredProductsQuery,
 } = Api;
