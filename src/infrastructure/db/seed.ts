@@ -1,11 +1,14 @@
 import "dotenv/config";
+import mongoose from "mongoose";
 import { connectDB } from "./index";
 import Category from "./entities/Category";
-import Product from "./entities/Product";
 import stripe from "../stripe";
+import Product from "./entities/Product";
 
+// Categories
 const CATEGORY_NAMES = ["Rings", "Bracelets", "Earrings", "Necklaces", "Others"];
 
+// Random name helpers
 const ADJECTIVES = [
   "Elegant", "Sparkling", "Timeless", "Delicate", "Luxurious", "Charming", "Graceful", "Unique", "Stylish", "Classic",
   "Modern", "Vintage", "Radiant", "Brilliant", "Bold", "Refined", "Dazzling", "Sophisticated", "Gleaming", "Exquisite"
@@ -16,15 +19,19 @@ const NOUNS = [
   "Ornament", "Touch", "Look", "Trend", "Vibe", "Aura", "Glow", "Shine", "Elegance", "Essence"
 ];
 
+// Attributes pool
+const COLORS = ["red", "blue", "green", "black", "white", "gold", "silver"];
+const SIZES = ["S", "M", "L", "XL"];
+const MATERIALS = ["cotton", "wool", "leather", "gold", "silver", "platinum"];
 
-// ✅ Slugify function: removes spaces and non-word characters
+// ✅ Slugify
 function slugify(text: string) {
   return text
     .toString()
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "")      // Remove spaces
-    .replace(/[^\w]+/g, "");  // Remove non-word characters
+    .replace(/[^\w]+/g, "");  // Remove non-word chars
 }
 
 function getRandomName(categoryName: string) {
@@ -33,8 +40,8 @@ function getRandomName(categoryName: string) {
   return `${adj} ${categoryName} ${noun}`;
 }
 
-const createProductsForCategory = async (categoryId: any, categoryName: string) => {
-  const products = [];
+const createProductsForCategory = async (categoryId: mongoose.Types.ObjectId, categoryName: string) => {
+  const products: any[] = [];
 
   for (let i = 0; i < 10; i++) {
     try {
@@ -42,29 +49,38 @@ const createProductsForCategory = async (categoryId: any, categoryName: string) 
       const description = `This is a ${categoryName} that is ${name}`;
       const price = Math.floor(Math.random() * 100) + 10;
 
+      // Pick random attributes
+      const attributes = {
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        size: SIZES[Math.floor(Math.random() * SIZES.length)],
+        material: MATERIALS[Math.floor(Math.random() * MATERIALS.length)],
+      };
+
       // 1️⃣ Create Stripe product
       const stripeProduct = await stripe.products.create({
-        name: name,
-        description: description,
+        name,
+        description,
       });
 
-      // 2️⃣ Create Stripe price for this product
+      // 2️⃣ Create Stripe price
       const stripePrice = await stripe.prices.create({
         product: stripeProduct.id,
         currency: "usd",
-        unit_amount: price * 100, // Stripe expects amount in cents
+        unit_amount: price * 100,
       });
 
-      // 3️⃣ Push product with price ID into DB array
+      // 3️⃣ Push product to array
       products.push({
         categoryId,
-        name: name,
-        price: price,
-        description: description,
+        name,
+        price,
+        description,
         image: `https://placehold.co/150x150?text=${encodeURIComponent(categoryName)}`,
         stock: Math.floor(Math.random() * 50) + 1,
         reviews: [],
         stripePriceId: stripePrice.id,
+        rating: Math.floor(Math.random() * 5) + 1,
+        attributes, // ✅ Save attributes in DB
       });
 
     } catch (err) {
@@ -88,7 +104,7 @@ const seed = async () => {
     for (const name of CATEGORY_NAMES) {
       const category = await Category.create({
         name,
-        slug: slugify(name), // ✅ Slug without spaces
+        slug: slugify(name),
       });
 
       await createProductsForCategory(category._id, name);

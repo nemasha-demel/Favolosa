@@ -16,18 +16,45 @@ const getAllProducts = async (
   next: NextFunction
 ) => {
   try {
-    const categoryId = req.query.categoryId;
+    const { categoryId, minPrice, maxPrice, sort, ...rest } = req.query;
+
+    const filter: any = {};
+
+    // Category
     if (categoryId) {
-      const products = await Product.find({ categoryId });
-      res.json(products);
-    } else {
-      const products = await Product.find();
-      res.json(products);
+      filter.categoryId = categoryId;
     }
+
+    // Price range
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    // ✅ Dynamic attributes filtering
+    // Example: ?color=red&size=L → filter["attributes.color"] = "red"
+    for (const [key, value] of Object.entries(rest)) {
+      filter[`attributes.${key}`] = value;
+    }
+
+    // Sorting
+    let sortOption: any = {};
+    if (sort === "price_asc") {
+      sortOption.price = 1;
+    } else if (sort === "price_desc") {
+      sortOption.price = -1;
+    }
+
+    const products = await Product.find(filter).sort(sortOption);
+
+    res.json(products);
   } catch (error) {
     next(error);
   }
 };
+
+
 
 const getProductsForSearchQuery = async (
   req: Request,
