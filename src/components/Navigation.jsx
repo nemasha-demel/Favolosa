@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Menu, X, ShoppingBag, Heart } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart,Truck } from "lucide-react";
 import { useSelector } from "react-redux";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import ProductSearchForm from "./ProductSearchForm";
 import { useUser } from "@clerk/clerk-react";
+
 
 export default function Navigation() {
   const { user } = useUser();
@@ -73,6 +74,10 @@ export default function Navigation() {
                 {wishlistItemCount}
               </span>
             )}
+          </Link>
+
+          <Link to="/orders" aria-label="Orders" className="p-1 relative">
+            <Truck size={20} />
           </Link>
 
           <SignedIn>
