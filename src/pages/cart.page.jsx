@@ -72,14 +72,14 @@ function CartPage() {
 
 
         <div className="mt-4 flex flex-col items-center gap-3">   
-                  <ShoppingBag size={400} className="text-gray-200" />
-                  <p className="text-3xl">This cart is empty</p>
-                  <p className="text-gray-400 text-center">You don't have any products in the cart yet. You will find a lot of interesting <br /> products on our "Shop" page.</p>
-                  <Link to="/">
-                    <Button>Return To Shop</Button>
-                  </Link>
+          <ShoppingBag size={400} className="text-gray-200" />
+          <p className="text-3xl">This cart is empty</p>
+          <p className="text-gray-400 text-center">You don't have any products in the cart yet. You will find a lot of interesting <br /> products on our "Shop" page.</p>
+          <Link to="/">
+            <Button>Return To Shop</Button>
+          </Link>
 
-                </div>
+        </div>
               )}
 
      
