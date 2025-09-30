@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { X, ShoppingBag } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/lib/features/cartSlice";
-import { clearWishlist } from "@/lib/features/wishlistSlice";
+import { removeFromWishlist } from "@/lib/features/wishlistSlice";
 
 function WishlistItem({ item }) {
   const dispatch = useDispatch();
@@ -14,18 +14,17 @@ function WishlistItem({ item }) {
       key={product._id}
       className="bg-white rounded-xl shadow hover:shadow-md transition duration-300 flex flex-col overflow-hidden"
     >
-      {/* Header with Remove button */}
+
       <div className="flex justify-between items-center px-3 py-2 border-b">
         <button
-            onClick={() => dispatch(clearWishlist(product._id))}
-            className="flex items-center gap-1 text-xs text-gray-600 px-2 py-1 rounded hover:text-red-500 hover:bg-gray-200"
+          onClick={() => dispatch(removeFromWishlist(product._id))}
+          className="flex items-center gap-1 text-xs text-gray-600 px-2 py-1 rounded hover:text-red-500 hover:bg-gray-200"
         >
-            <X className="w-3.5 h-3.5" />
-            Remove
+          <X className="w-3.5 h-3.5" />
+          Remove
         </button>
-       </div>
+      </div>
 
-      {/* Image with Add to Cart button */}
       <div className="relative">
         <button
           onClick={() =>
@@ -62,7 +61,6 @@ function WishlistItem({ item }) {
           LKR {product.price}
         </span>
 
-        {/* Ratings (static for now, 4 stars) */}
         <div className="flex text-yellow-400 mt-1 text-sm">
           <span>★★★★☆</span>
         </div>

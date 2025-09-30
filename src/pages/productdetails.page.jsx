@@ -5,6 +5,9 @@ import { Star } from "lucide-react";
 import { addToCart } from "@/lib/features/cartSlice";
 import { addToWishlist } from "@/lib/features/wishlistSlice";
 import { useGetProductByIdQuery } from "@/lib/api";
+import { useState } from "react";
+import QuantitySelector from "@/components/QuantitySelector";
+
 
 function ProductDetailsPage() {
   const { id } = useParams();
@@ -16,6 +19,8 @@ function ProductDetailsPage() {
     isError,
     error,
   } = useGetProductByIdQuery(id);
+
+  const [quantity, setQuantity] = useState(1);
 
   // Loading state
   if (isLoading) {
@@ -41,7 +46,6 @@ function ProductDetailsPage() {
     );
   }
 
-  // Error or not found
   if (isError || !product) {
     return (
       <div className="max-w-6xl mx-auto p-6">
@@ -75,18 +79,15 @@ function ProductDetailsPage() {
     );
   }
 
-  // ✅ Calculate average rating
   const averageRating =
     product.reviews && product.reviews.length > 0
       ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
         product.reviews.length
       : 0;
 
-  // Success - render product
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 mt-20">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
-        {/* Left - Image */}
         <div className="w-[578px] h-[400px] mx-auto">
           <img
             src={product.image}
@@ -98,12 +99,9 @@ function ProductDetailsPage() {
             }}
           />
         </div>
-
-        {/* Right - Product Info */}
         <div>
           <h2 className="text-2xl font-semibold">{product.name}</h2>
 
-          {/* Rating */}
           <div className="flex items-center mt-2">
             {Array(5).fill(0).map((_, i) => (
               <Star
@@ -118,12 +116,11 @@ function ProductDetailsPage() {
             </span>
           </div>
 
-          <p className="text-xl font-bold mt-3">LKR {product.price}</p>
+          <p className="text-xl font-bold mt-3">USD {product.price}</p>
           <p className="text-gray-600 mt-4">
             {product.description || "No description available."}
           </p>
 
-          {/* Category if available */}
           {product.category && (
             <div className="mt-4">
               <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
@@ -133,11 +130,15 @@ function ProductDetailsPage() {
               </span>
             </div>
           )}
+          <div>
+            <QuantitySelector
+              quantity={quantity} setQuantity={setQuantity}
+            />
+          </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 mt-6">
             <button
-              onClick={() => dispatch(addToCart(product))}
+              onClick={() => dispatch(addToCart({ ...product, quantity }))}
               className="px-6 py-2 bg-black text-white rounded-lg shadow hover:bg-gray-800 transition-colors"
             >
               Add to Cart
@@ -152,7 +153,6 @@ function ProductDetailsPage() {
         </div>
       </div>
 
-      {/* Reviews Section */}
       <div className="mt-12">
         <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
         {product.reviews && product.reviews.length > 0 ? (

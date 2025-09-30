@@ -1,14 +1,42 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import QuantitySelector from "@/components/QuantitySelector";
+import { addToCart, removeFromCart } from "@/lib/features/cartSlice";
+
 function CartItem({ item }) {
-  const subTotal = item.product.price * item.quantity;
+  const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  useEffect(() => {
+    if (quantity !== item.quantity) {
+      dispatch(
+        addToCart({
+          ...item.product,
+          quantity: quantity - item.quantity,
+        })
+      );
+    }
+  }, [quantity]);
+
+  const subTotal = item.product.price * quantity;
+
+  const handleRemove = () => {
+    dispatch(removeFromCart(item.product._id));
+  };
 
   return (
     <tr className="border-b">
-      {/* Remove button (can add delete logic later) */}
+      {/* Remove button */}
       <td className="py-2 px-2">
-        <button className="text-gray-500 hover:text-red-600">×</button>
+        <button
+          onClick={handleRemove}
+          className="text-gray-500 hover:text-red-600 text-lg"
+        >
+          ×
+        </button>
       </td>
 
-      {/* Product Image + Name */}
+      {/* Product Image  */}
       <td className="py-2 px-2 flex items-center space-x-3">
         <img
           src={item.product.image || "/placeholder.svg"}
@@ -19,19 +47,15 @@ function CartItem({ item }) {
       </td>
 
       {/* Price */}
-      <td className="py-2 px-2">LKR {item.product.price}</td>
+      <td className="py-2 px-2">USD {item.product.price}</td>
 
-      {/* Quantity (just display for now) */}
+      {/* Quantity */}
       <td className="py-2 px-2">
-        <div className="flex items-center space-x-2">
-          <button className="border px-2">-</button>
-          <span>{item.quantity}</span>
-          <button className="border px-2">+</button>
-        </div>
+        <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
       </td>
 
       {/* Sub Total */}
-      <td className="py-2 px-2">LKR {subTotal}</td>
+      <td className="py-2 px-2">USD {subTotal}</td>
     </tr>
   );
 }

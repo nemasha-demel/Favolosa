@@ -2,9 +2,8 @@ import React from "react";
 
 function HeroGrid() {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 lg:px-16 gap-4 mt-4">
-      
-      {/* Left Large Hero Image */}
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 lg:px-16 gap-4 mt-20">
+
       <div className="relative col-span-1 lg:col-span-2 rounded-2xl w-full max-w-full aspect-[779/506] mx-auto overflow-hidden">
         <img
           src="/Images/img3.jpg"
@@ -18,10 +17,8 @@ function HeroGrid() {
         </div>
       </div>
 
-      {/* Right Column - Two Smaller Images */}
       <div className="col-span-1 grid grid-rows-2 gap-4 w-full max-w-full mx-auto">
-        
-        {/* Top Image */}
+
         <div className="relative rounded-2xl overflow-hidden w-full aspect-[395/252]">
           <img
             src="/Images/img2.jpg"
@@ -35,7 +32,6 @@ function HeroGrid() {
           </div>
         </div>
 
-        {/* Bottom Image */}
         <div className="relative rounded-2xl overflow-hidden w-full aspect-[395/252]">
           <img
             src="/Images/img1.jpg"

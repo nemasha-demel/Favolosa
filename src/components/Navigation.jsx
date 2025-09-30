@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Menu, X, ShoppingBag, Heart,Truck } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, Truck } from "lucide-react";
 import { useSelector } from "react-redux";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import ProductSearchForm from "./ProductSearchForm";
 import { useUser } from "@clerk/clerk-react";
-
 
 export default function Navigation() {
   const { user } = useUser();
@@ -20,11 +19,10 @@ export default function Navigation() {
   const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const wishlistItemCount = wishlistItems.reduce((total, item) => total + item.quantity, 0);
 
-  // Function to close mobile menu
   const closeMobileMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="bg-[#FFE2E2] border-b border-gray-200 px-4 lg:px-16">
+    <header className="bg-[#FFE2E2] border-b border-gray-200 px-4 lg:px-16 fixed top-0 left-0 w-full z-50">
       <div className="flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="font-bold text-2xl font-mono">
@@ -35,7 +33,7 @@ export default function Navigation() {
         <nav className="hidden md:flex space-x-8">
           {[
             { path: "/shop/rings", label: "Rings" },
-            { path: "/shop/brecelets", label: "Bracelets" },
+            { path: "/shop/bracelets", label: "Bracelets" },
             { path: "/shop/earrings", label: "Earrings" },
             { path: "/shop/necklaces", label: "Necklaces" },
             { path: "/shop/others", label: "Others" },
@@ -54,9 +52,10 @@ export default function Navigation() {
 
         {/* Icons */}
         <div className="flex items-center space-x-4">
-          <ProductSearchForm />
+          <div className="hidden md:block">
+            <ProductSearchForm />
+          </div>
 
-          {/* Cart Icon */}
           <Link to="/cart" aria-label="Shopping Bag" className="p-1 relative">
             <ShoppingBag size={20} />
             {cartItemCount > 0 && (
@@ -66,7 +65,6 @@ export default function Navigation() {
             )}
           </Link>
 
-          {/* Wishlist Icon */}
           <Link to="/wishlist" aria-label="Wishlist" className="p-1 relative">
             <Heart size={20} />
             {wishlistItemCount > 0 && (
@@ -106,14 +104,18 @@ export default function Navigation() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden fixed top-16 left-4 right-4 bg-white z-10">
+        <div className="md:hidden fixed top-16 left-4 right-4 bg-white z-10 p-4 shadow-md rounded-md">
+          <div className="mb-3">
+            <ProductSearchForm />
+          </div>
+
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
             {[
-              { path: "/shop/shoes", label: "Shoes" },
-              { path: "/shop/tshirts", label: "T-Shirt" },
-              { path: "/shop/shorts", label: "Shorts" },
-              { path: "/shop/pants", label: "Pants" },
-              { path: "/shop/socks", label: "Socks" },
+              { path: "/shop/rings", label: "Rings" },
+              { path: "/shop/bracelets", label: "Bracelets" },
+              { path: "/shop/earrings", label: "Earrings" },
+              { path: "/shop/necklaces", label: "Necklaces" },
+              { path: "/shop/others", label: "Others" },
             ].map((item) => (
               <Link
                 key={item.path}
