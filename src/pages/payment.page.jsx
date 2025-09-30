@@ -15,21 +15,12 @@ function PaymentPage() {
   }
 
   return (
-    <main className="px-8">
+    <main className="px-8 mt-20">
       
       <div className="mt-4">
         <PaymentForm orderId={orderId} />
       </div>
 
-      <div className="mt-4">
-        <p>
-          Total Price: $
-          {cart.reduce(
-            (acc, item) => acc + item.product.price * item.quantity,
-            0
-          )}
-        </p>
-      </div>
     </main>
   );
 }

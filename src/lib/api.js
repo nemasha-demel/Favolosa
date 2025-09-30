@@ -67,9 +67,14 @@ export const Api = createApi({
         body: order,          
       }),        
     }),        
-    getCheckoutSessionStatus: build.query({       
-      query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,     
-    }),      
+    getCheckoutSessionStatus: build.query({
+  query: (sessionId) => `/payments/session-status?session_id=${sessionId}`,
+}),
+
+    getMyOrders: build.query({
+      query: () => `/orders`,
+    }),
+      
   }),    
 });        
 
@@ -81,8 +86,9 @@ export const {
   useGetCheckoutSessionStatusQuery, 
   useGetProductsByCategoryQuery, 
   useGetAllCategoriesQuery,
-  useGetProductByIdQuery, // 👈 ADD THIS NEW HOOK
+  useGetProductByIdQuery, 
   useCreateOrderMutation, 
   useCreateProductMutation,
   useGetFilteredProductsQuery,
+  useGetMyOrdersQuery,
 } = Api;

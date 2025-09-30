@@ -28,7 +28,6 @@ import OrdersPage from "./pages/orders.page.jsx";
 
 import { ClerkProvider } from "@clerk/clerk-react";
 
-// Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -52,11 +51,8 @@ createRoot(document.getElementById("root")).render(
               <Route path="/newarrivals" element={<NewArrivalsPage />} />
               <Route element={<ProtectedLayout />}>
                 <Route path="/orders" element={<OrdersPage />} />
-              </Route>
-              
+              </Route>     
 
-
-              {/* Cart routes - including nested payment and complete */}
               <Route path="/cart" element={<CartPage />} />
               <Route path="/wishlist" element={<WishListPage />} />
               <Route path="/cart" element={<ProtectedLayout />}>
@@ -64,8 +60,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="cardpayment" element={<PaymentPage />} />
                 <Route path="complete" element={<CompletePage />} />
               </Route>
-
-              {/* Other protected routes */}
+              <Route path="/complete" element={<CompletePage />} />
               <Route element={<ProtectedLayout />}>
                 <Route path="/checkout" element={<CheckoutPage />} />
                 
@@ -77,8 +72,7 @@ createRoot(document.getElementById("root")).render(
                 </Route>
               </Route>
             </Route>
-            
-            {/* Auth routes outside of RootLayout */}
+
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/sign-in" element={<SignInPage />} />
           </Routes>

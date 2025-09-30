@@ -16,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// ---- Validation schema ----
 const shippingAddressFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -54,7 +53,7 @@ function ShippingAddressForm({ onSubmitRef }) {
   async function onSubmit(values) {
     try {
       const order = await createOrder({
-        shippingAddress: values, // matches Mongoose schema now
+        shippingAddress: values, 
         orderItems: cart.map((item) => ({
           productId: item.product._id,
           quantity: item.quantity,
@@ -66,7 +65,6 @@ function ShippingAddressForm({ onSubmitRef }) {
     }
   }
 
-  // Expose handleSubmit to parent
   if (onSubmitRef) {
     onSubmitRef.current = form.handleSubmit(onSubmit);
   }
@@ -74,7 +72,6 @@ function ShippingAddressForm({ onSubmitRef }) {
   return (
     <Form {...form}>
       <form className="space-y-4">
-        {/* First & Last Name */}
         <div className="grid grid-cols-2 gap-4">
           <FormField control={form.control} name="firstName" render={({ field }) => (
             <FormItem>
@@ -96,7 +93,6 @@ function ShippingAddressForm({ onSubmitRef }) {
           )}/>
         </div>
 
-        {/* Country */}
         <FormField control={form.control} name="country" render={({ field }) => (
           <FormItem>
             <FormLabel>Country</FormLabel>
@@ -107,7 +103,6 @@ function ShippingAddressForm({ onSubmitRef }) {
           </FormItem>
         )}/>
 
-        {/* Street */}
         <FormField control={form.control} name="street" render={({ field }) => (
           <FormItem>
             <FormLabel>Street Address</FormLabel>
@@ -118,7 +113,6 @@ function ShippingAddressForm({ onSubmitRef }) {
           </FormItem>
         )}/>
 
-        {/* State & City */}
         <div className="grid grid-cols-2 gap-4">
           <FormField control={form.control} name="state" render={({ field }) => (
             <FormItem>

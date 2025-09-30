@@ -4,7 +4,7 @@ import { useState } from "react";
 function PaymentOptionsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("orderId"); // preserve orderId
+  const orderId = searchParams.get("orderId"); 
 
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -28,12 +28,11 @@ function PaymentOptionsPage() {
   };
 
   return (
-    <main className="px-16 min-h-screen py-8">
+    <main className="px-16 min-h-screen py-8 mt-20">
       <div className="max-w-md mx-auto p-6 bg-red-50 rounded-xl shadow-sm">
         <h1 className="text-lg font-semibold mb-4">Payment Information</h1>
 
         <div className="bg-white p-6 rounded-xl space-y-4 shadow">
-          {/* Radio buttons */}
           <label className="flex items-center space-x-2">
             <input
               type="radio"
@@ -58,12 +57,10 @@ function PaymentOptionsPage() {
             <span>Cash on Delivery (COD)</span>
           </label>
 
-          {/* Terms & Conditions (always shown) */}
           <div className="p-3 border rounded-md border-pink-200 text-sm text-gray-700 min-h-[100px]">
             {termsAndConditions[paymentMethod] || termsAndConditions.default}
           </div>
 
-          {/* Confirm button */}
           <button
             onClick={handleConfirmOrder}
             className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition"

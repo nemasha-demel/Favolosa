@@ -8,7 +8,7 @@ function WishListPage() {
   const wishlist = useSelector((state) => state.wishlist.wishlistItems);
 
   return (
-    <main className="px-16 min-h-screen py-8">
+    <main className="px-16 min-h-screen py-8 mt-15">
       <h2 className="text-4xl font-bold text-center">Wishlist</h2>
 
       {wishlist.length > 0 ? (

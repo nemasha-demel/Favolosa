@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
-import { useState, useEffect } from "react";
-import { useGetAllCategoriesQuery, useGetFilteredProductsQuery } from "@/lib/api";
+import { useState, useEffect, useMemo } from "react";
+import { useGetAllCategoriesQuery, useGetFilteredProductsQuery, useGetProductsByCategoryQuery } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import { ChevronDown } from "lucide-react";
 
@@ -16,7 +16,6 @@ function ShopPage() {
     }
   }, [categories, slug]);
 
-  // ✅ Filters state
   const [filters, setFilters] = useState({
     categoryId: null,
     color: "",
@@ -27,89 +26,95 @@ function ShopPage() {
     sort: "",
   });
 
-  // ✅ Update categoryId in filters when it changes
   useEffect(() => {
     if (categoryId) {
       setFilters((prev) => ({ ...prev, categoryId }));
     }
   }, [categoryId]);
 
-  // ✅ Fetch products with filters
   const { data: products, isLoading, isError, error } = useGetFilteredProductsQuery(filters);
+
+  const { data: allProductsInCategory } = useGetProductsByCategoryQuery(categoryId);
+
+  const attributes = useMemo(() => {
+    if (!allProductsInCategory) return { colors: [], sizes: [], materials: [] };
+    const colors = [...new Set(allProductsInCategory.map((p) => p.attributes.color))];
+    const sizes = [...new Set(allProductsInCategory.map((p) => p.attributes.size))];
+    const materials = [...new Set(allProductsInCategory.map((p) => p.attributes.material))];
+    return { colors, sizes, materials };
+  }, [allProductsInCategory]);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error: {JSON.stringify(error)}</p>;
 
   return (
-    <main className="p-6">
+    <main className="p-6 mt-20">
       {slug && (
         <h2 className="text-3xl font-semibold text-center mb-8 capitalize">
           Category: {slug}
         </h2>
       )}
 
-      {/* Filters UI */}
+      {/* Filters */}
       <div className="flex flex-wrap gap-4 justify-center mb-6">
-        {/* Price Range */}
         <input
           type="number"
           placeholder="Min Price"
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded-full bg-white text-gray-800"
           onChange={(e) => setFilters((prev) => ({ ...prev, minPrice: e.target.value }))}
         />
         <input
           type="number"
           placeholder="Max Price"
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded-full bg-white text-gray-800"
           onChange={(e) => setFilters((prev) => ({ ...prev, maxPrice: e.target.value }))}
         />
 
-        {/* Color */}
         <select
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded-full bg-black text-white"
+          value={filters.color}
           onChange={(e) => setFilters((prev) => ({ ...prev, color: e.target.value }))}
         >
           <option value="">All Colors</option>
-          <option value="red">Red</option>
-          <option value="blue">Blue</option>
-          <option value="green">Green</option>
+          {attributes.colors.map((color) => (
+            <option key={color} value={color}>{color}</option>
+          ))}
         </select>
 
-        {/* Size */}
         <select
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded-full bg-black text-white"
+          value={filters.size}
           onChange={(e) => setFilters((prev) => ({ ...prev, size: e.target.value }))}
         >
           <option value="">All Sizes</option>
-          <option value="S">Small</option>
-          <option value="M">Medium</option>
-          <option value="L">Large</option>
+          {attributes.sizes.map((size) => (
+            <option key={size} value={size}>{size}</option>
+          ))}
         </select>
 
-        {/* Material */}
         <select
-          className="border px-3 py-2 rounded"
+          className="border px-3 py-2 rounded-full bg-black text-white"
+          value={filters.material}
           onChange={(e) => setFilters((prev) => ({ ...prev, material: e.target.value }))}
         >
           <option value="">All Materials</option>
-          <option value="cotton">Cotton</option>
-          <option value="wool">Wool</option>
-          <option value="leather">Leather</option>
+          {attributes.materials.map((material) => (
+            <option key={material} value={material}>{material}</option>
+          ))}
         </select>
 
-        {/* Sort buttons */}
-        <button
-          onClick={() => setFilters((prev) => ({ ...prev, sort: "price_asc" }))}
-          className="flex items-center gap-1 bg-black text-white px-4 py-2 rounded-full"
-        >
-          Price Low → High <ChevronDown className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setFilters((prev) => ({ ...prev, sort: "price_desc" }))}
-          className="flex items-center gap-1 bg-black text-white px-4 py-2 rounded-full"
-        >
-          Price High → Low <ChevronDown className="w-4 h-4" />
-        </button>
+        <div className="relative">
+          <select
+            className="border px-4 py-2 rounded-full bg-black text-white appearance-none pr-8"
+            onChange={(e) => setFilters((prev) => ({ ...prev, sort: e.target.value }))}
+            value={filters.sort}
+          >
+            <option value="">Sort By</option>
+            <option value="price_asc">Price Low → High</option>
+            <option value="price_desc">Price High → Low</option>
+          </select>
+          <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
+        </div>
       </div>
 
       {/* Product List */}

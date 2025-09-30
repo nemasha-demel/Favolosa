@@ -3,17 +3,12 @@ import { Facebook, Instagram, Twitter, MapPin, Phone, Mail } from 'lucide-react'
 export default function Footer() {
   return (
     <footer className="bg-[#FBE1E1] py-10 px-4 lg:px-16">
-      {/* Main Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-        
-        {/* Favolosa Branding + Social */}
         <div className="text-center lg:text-left">
           <h2 className="text-3xl font-bold">Favolosa</h2>
           <p className="text-sm mt-2">
             Favolosa.lk - Online Store for <br /> Fashionable Jewelry & <br /> Accessories
           </p>
-
-          {/* Social Links */}
           <div className="mt-4">
             <p className="font-semibold mb-2">Follow Us</p>
             <div className="flex justify-center lg:justify-start space-x-4">
@@ -30,7 +25,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Categories */}
         <div className="text-center lg:text-left">
           <h3 className="text-xl font-semibold">Categories</h3>
           <ul className="mt-4 space-y-2">
@@ -44,7 +38,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Customer Service */}
         <div className="text-center lg:text-left">
           <h3 className="text-xl font-semibold">Customer Service</h3>
           <ul className="mt-4 space-y-2">
@@ -63,7 +56,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Map */}
         <div className="w-full h-[200px]">
           <iframe
             className="w-full h-full border-0 rounded-md"
@@ -73,7 +65,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyright */}
       <div className="text-center text-sm text-gray-500 mt-6">
         <p>© 2025 Favolosa Jewelry | By Favolosa Team</p>
       </div>
