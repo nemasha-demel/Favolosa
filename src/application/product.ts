@@ -20,39 +20,39 @@ const getAllProducts = async (
 
     const filter: any = {};
 
-    // Category
+    // Filter by category
     if (categoryId) {
       filter.categoryId = categoryId;
     }
 
-    // Price range
+    // Filter by price range
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // ✅ Dynamic attributes filtering
-    // Example: ?color=red&size=L → filter["attributes.color"] = "red"
+    // Dynamic attributes filtering 
     for (const [key, value] of Object.entries(rest)) {
       filter[`attributes.${key}`] = value;
     }
 
     // Sorting
     let sortOption: any = {};
-    if (sort === "price_asc") {
-      sortOption.price = 1;
-    } else if (sort === "price_desc") {
-      sortOption.price = -1;
-    }
+    if (sort === "price_asc") sortOption.price = 1;
+    else if (sort === "price_desc") sortOption.price = -1;
 
-    const products = await Product.find(filter).sort(sortOption);
+    // Fetch products with filtering, sorting, and populate reviews
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .populate("reviews", "rating review");
 
     res.json(products);
   } catch (error) {
     next(error);
   }
 };
+
 
 
 

@@ -35,10 +35,6 @@ const productSchema = new mongoose.Schema({
     ref: "Review",
     default: [],
   },
-  rating: {
-    type: Number,
-    default: 0, 
-  },
   attributes: {
     type: Map,
     of: String,   

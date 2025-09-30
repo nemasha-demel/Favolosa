@@ -10,7 +10,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     throw new UnauthorizedError("Unauthorized");
   }
 
-  console.log(auth); // contains userId, sessionId, etc.
+  //console.log(auth); 
   next();
 };
 

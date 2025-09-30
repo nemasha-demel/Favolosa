@@ -1,11 +1,10 @@
 import { S3Client } from "@aws-sdk/client-s3";
 
-// Debug log to check if env vars are loaded
-console.log("Cloudflare R2 config:", {
-  accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-  accessKey: process.env.CLOUDFLARE_ACCESS_KEY_ID ? "set" : "MISSING",
-  secretKey: process.env.CLOUDFLARE_SECRET_ACCESS_KEY ? "set" : "MISSING",
-});
+// console.log("Cloudflare R2 config:", {
+//   accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+//   accessKey: process.env.CLOUDFLARE_ACCESS_KEY_ID ? "set" : "MISSING",
+//   secretKey: process.env.CLOUDFLARE_SECRET_ACCESS_KEY ? "set" : "MISSING",
+// });
 
 declare global {
   var cachedS3: S3Client;

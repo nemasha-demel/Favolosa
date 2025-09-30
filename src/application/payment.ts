@@ -42,9 +42,9 @@ async function fulfillCheckout(sessionId: string) {
     throw new Error("Order is not pending");
   }
 
-  // Check the Checkout Session's payment_status property
+
   if (checkoutSession.payment_status !== "unpaid") {
-    // Perform fulfillment of the line items
+  
     order.items.forEach(async (item) => {
       const product = item.productId;
       await Product.findByIdAndUpdate(product._id, {
@@ -100,7 +100,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       quantity: item.quantity,
     })),
     mode: "payment",
-    return_url: `${FRONTEND_URL}/shop/complete?session_id={CHECKOUT_SESSION_ID}`,
+    return_url: `${FRONTEND_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
+
     metadata: {
       orderId: req.body.orderId,
     },
@@ -108,6 +109,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
   res.send({ clientSecret: session.client_secret });
 };
+
+
 
 export const retrieveSessionStatus = async (req: Request, res: Response) => {
   const checkoutSession = await stripe.checkout.sessions.retrieve(
@@ -119,9 +122,21 @@ export const retrieveSessionStatus = async (req: Request, res: Response) => {
     throw new Error("Order not found");
   }
 
+
+  let normalizedStatus: "pending" | "complete" | "failed";
+  if (checkoutSession.payment_status === "paid") {
+    normalizedStatus = "complete";
+  } else if (checkoutSession.status === "open") {
+    normalizedStatus = "pending";
+  } else {
+    normalizedStatus = "failed";
+  }
+
   res.status(200).json({
     orderId: order._id,
-    status: checkoutSession.status,
+    status: normalizedStatus,
+    session_status: checkoutSession.status,        
+    payment_status: checkoutSession.payment_status, 
     customer_email: checkoutSession.customer_details?.email,
     orderStatus: order.orderStatus,
     paymentStatus: order.paymentStatus,

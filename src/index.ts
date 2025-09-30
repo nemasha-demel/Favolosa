@@ -23,8 +23,7 @@ app.post(
   handleWebhook
 );
 
-// Middleware to parse JSON bodies
-app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
+app.use(express.json()); 
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);

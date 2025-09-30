@@ -5,10 +5,9 @@ import Category from "./entities/Category";
 import stripe from "../stripe";
 import Product from "./entities/Product";
 
-// Categories
+
 const CATEGORY_NAMES = ["Rings", "Bracelets", "Earrings", "Necklaces", "Others"];
 
-// Random name helpers
 const ADJECTIVES = [
   "Elegant", "Sparkling", "Timeless", "Delicate", "Luxurious", "Charming", "Graceful", "Unique", "Stylish", "Classic",
   "Modern", "Vintage", "Radiant", "Brilliant", "Bold", "Refined", "Dazzling", "Sophisticated", "Gleaming", "Exquisite"
@@ -19,7 +18,6 @@ const NOUNS = [
   "Ornament", "Touch", "Look", "Trend", "Vibe", "Aura", "Glow", "Shine", "Elegance", "Essence"
 ];
 
-// Attributes pool
 const COLORS = ["red", "blue", "green", "black", "white", "gold", "silver"];
 const SIZES = ["S", "M", "L", "XL"];
 const MATERIALS = ["cotton", "wool", "leather", "gold", "silver", "platinum"];
@@ -30,8 +28,8 @@ function slugify(text: string) {
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, "")      // Remove spaces
-    .replace(/[^\w]+/g, "");  // Remove non-word chars
+    .replace(/\s+/g, "")      
+    .replace(/[^\w]+/g, "");  
 }
 
 function getRandomName(categoryName: string) {
@@ -56,20 +54,20 @@ const createProductsForCategory = async (categoryId: mongoose.Types.ObjectId, ca
         material: MATERIALS[Math.floor(Math.random() * MATERIALS.length)],
       };
 
-      // 1️⃣ Create Stripe product
+      // Create Stripe product
       const stripeProduct = await stripe.products.create({
         name,
         description,
       });
 
-      // 2️⃣ Create Stripe price
+      //  Create Stripe price
       const stripePrice = await stripe.prices.create({
         product: stripeProduct.id,
         currency: "usd",
         unit_amount: price * 100,
       });
 
-      // 3️⃣ Push product to array
+      // Push product to array
       products.push({
         categoryId,
         name,
@@ -80,7 +78,7 @@ const createProductsForCategory = async (categoryId: mongoose.Types.ObjectId, ca
         reviews: [],
         stripePriceId: stripePrice.id,
         rating: Math.floor(Math.random() * 5) + 1,
-        attributes, // ✅ Save attributes in DB
+        attributes, 
       });
 
     } catch (err) {
